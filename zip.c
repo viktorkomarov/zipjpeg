@@ -55,12 +55,9 @@ int regular_sign_step(int current, unsigned char byte)
     }
 }
 
-
-size_t analyze_signature(ZIP z)
+size_t analyze_signature(ZIP *z)
 {
     int signatures_match[2] = {0,0};
-    int match = 0;
-
     z->signature = NO_ZIP;
     size_t offset = 0;
     for(;offset < z->size_text; offset++)
@@ -86,9 +83,9 @@ size_t analyze_signature(ZIP z)
     return 0;
 }
 
-ZIP init_zip(const char *text, size_t size)
+ZIP *init_zip(const char *text, size_t size)
 {  
-    ZIP z = malloc(sizeof(struct zip));
+    ZIP *z = malloc(sizeof(struct zip));
     if(!z) {
         return z;
     }
@@ -97,4 +94,14 @@ ZIP init_zip(const char *text, size_t size)
     z->size_text = size; 
     z->offset = analyze_signature(z);
     return z;
+}
+
+void destroy(ZIP *z)
+{
+    free(z);
+}
+
+enum ZIP_SIGNATURE sign(ZIP *z)
+{
+    return z->signature;
 }
