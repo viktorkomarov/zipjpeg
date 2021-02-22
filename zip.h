@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-enum ZIP_SIGNATURE {ZIP_EMPTY = 0, ZIP_REGULAR, NO_ZIP};
+typedef struct zip zip;
 
-typedef struct zip ZIP;
+zip *init_zip(const char *text, size_t size);
 
-ZIP *init_zip(const char *text, size_t size);
+bool is_zip(zip *z);
 
-enum ZIP_SIGNATURE sign(ZIP *z);
+void destroy(zip *z);
 
-void destroy(ZIP *z);
+void print_files(zip *z);
 
 #endif

@@ -31,22 +31,15 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    ZIP *zip = init_zip(text, buff.st_size);
-    if (zip) {
-        enum ZIP_SIGNATURE signature = sign(zip);
-        switch (signature)
-        {
-        case ZIP_EMPTY:
-            printf("empty zip\n");
-            break;
-        case ZIP_REGULAR:
-            printf("zip regular\n");
-            break;
-        case NO_ZIP:
-            printf("no zip\n");
-            break;
+    zip *z = init_zip(text, buff.st_size);
+    if (z) {
+        if (is_zip(z)) {
+            printf("zip was found...\n");
+            print_files(z);
+        } else {
+            printf("zip wasn't found\n");
         }
-        destroy(zip);
+        destroy(z);
         return EXIT_SUCCESS;
     }
     perror("can't build zip");
