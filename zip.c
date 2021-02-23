@@ -17,7 +17,7 @@ struct zip
     size_t count_files;
 };
 
-static int32_t read32(const char *bytes) {
+static int32_t read_signature(const char *bytes) {
     int32_t num = 0;
     num |= (int)bytes[0] << 24;
     num |= (int)bytes[1] << 16;
@@ -27,12 +27,20 @@ static int32_t read32(const char *bytes) {
     return num;
 }
 
+static int16_t read16le(const char *bytes) {
+    int16_t num = 0;
+    num |= (int)bytes[1] << 8;
+    num |= (int)bytes[0];
+
+    return num;
+}
+
 static void mark_possible_files(zip *z)
 {
     size_t i = 0;
     while (i + 4 < z->size_text) 
     {
-        int32_t signature = read32(&z->text[i]);
+        int32_t signature = read_signature(&z->text[i]);
         if (signature == SIGNATURE) {
             z->offsets[z->count_files++] = i;
             i += 4;
@@ -69,7 +77,13 @@ void print_files(zip *z)
 {
     for(size_t i = 0; i < z->count_files; i++)
     {
-        size_t offset = z->offsets[i] + 30;
-        printf("File: %s\n", &z->text[offset]);
+        size_t offset = z->offsets[i];
+        int16_t file_len = read16le(&z->text[offset+26]);
+        printf("File: ");
+        for(int16_t i = 0; i < file_len; i++)
+        {
+            printf("%c", z->text[offset+30+i]);
+        }
+        printf("\n");
     }
 }

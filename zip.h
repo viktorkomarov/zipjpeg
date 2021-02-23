@@ -1,4 +1,6 @@
 #ifndef _ZIP_HEADER_
+#define _ZIP_HEADER_
+
 #include <stdlib.h>
 #include <stdbool.h>
 
